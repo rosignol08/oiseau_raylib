@@ -244,7 +244,7 @@ void update_oiseaux(std::vector<Oiseau>& oiseaux, float dt, float espacement, fl
         //oiseau.model.transform = MatrixMultiply(correctOrientation, oiseau.model.transform);
         // Add a 180-degree rotation around Y axis to flip the model direction
         Matrix flipDirection = MatrixRotateY(PI);
-        oiseau.model.transform = MatrixMultiply(oiseau.model.transform, flipDirection);
+        //oiseau.model.transform = MatrixMultiply(oiseau.model.transform, flipDirection);
     }
 }
 
@@ -259,8 +259,6 @@ void draw_scene(Camera camera, std::vector<Oiseau> oiseaux, int espacement, floa
     {
         oiseaux[i].draw();
     }
-    //DrawModel(sol, (Vector3){0.0f,-5.0f,0.0f}, 1.0f, WHITE);
-    DrawGrid(20, 1.0f);
     EndMode3D();
 }
 
@@ -480,7 +478,6 @@ int main(void) {
         //UpdateLightValues(shader, directionalLight);
 
         //EndShaderMode();
-        DrawGrid(20, 1.0f);
         EndMode3D();
         // Affichage de l'interface utilisateur
         DrawText(" d'objets 3D - Utilisez la souris pour naviguer", 10, 10, 20, DARKGRAY);
