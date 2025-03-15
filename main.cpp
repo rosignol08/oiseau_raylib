@@ -13,16 +13,17 @@
 #include "raymath.h"
 #include "rlgl.h"
 #define RAYGUI_IMPLEMENTATION
-#include "raygui.h"
 #include <stdlib.h>
 #include <vector>
 
-#include "sol.h"
 #define RLIGHTS_IMPLEMENTATION
 #if defined(_WIN32) || defined(_WIN64)
 #include "include/shaders/rlights.h"
+#define PLATFORME_LINUX false
 #elif defined(__linux__)
 #include "include/shaders/rlights.h"
+#include "raygui.h"
+#define PLATFORME_LINUX true
 #endif
 
 #if defined(PLATFORM_DESKTOP)
@@ -32,7 +33,7 @@
 #endif
 
 #define SHADOWMAP_RESOLUTION 4096 //la resolution de la shadowmap
-#define NB_OISEAUX 500
+#define NB_OISEAUX 200
 
 class Oiseau
 {
@@ -55,7 +56,12 @@ class Oiseau
     
     void draw()
     {
-        DrawModel(this->model, this->position, 1.10f, BLACK);
+        if (PLATFORME_LINUX){
+            DrawModel(this->model, this->position, 1.10f, WHITE);
+        }
+        else{
+            DrawModel(this->model, this->position, 0.010f, WHITE);
+        }
     }
 };
 
@@ -341,8 +347,7 @@ int main(void) {
     
     DisableCursor();// Limit cursor to relative movement inside the window
 
-    SetTargetFPS(165);
-    Mesh sphere_test = GenMeshSphere(1.0f, 16, 16);
+    SetTargetFPS(1650);
     Material material_test = LoadMaterialDefault();
     material_test.shader = shadowShader;
     material_test.maps[MATERIAL_MAP_DIFFUSE].color = RED;
@@ -359,7 +364,7 @@ int main(void) {
 
     float espacement = 2.0f;
     float vitesse = 3.0f;
-    float maxDistanceFromCenter = 7.0f;
+    float maxDistanceFromCenter = 15.0f;
     // Initialisation des oiseaux
     std::vector<Oiseau> oiseaux;
     for (int i = 0; i < NB_OISEAUX; i++)
@@ -483,17 +488,18 @@ int main(void) {
         DrawFPS(10, 40);
 
         /*
-        l'ui pour controler les paramètres
+        l'ui pour controler les paramètres que pour linux
         */
-        // Pour changer la direction de la lumière
-        GuiSliderBar((Rectangle){ 100, 100, 200, 20 }, "Time of Day", TextFormat("%.0f:00", timeOfDay), &timeOfDay, 0.0f, 24.0f);
-        //pour changer la vitessse
-        GuiSliderBar((Rectangle){ 100, 130, 200, 20 }, "Vitesse", TextFormat("%.2f", vitesse), &vitesse, 0.0f, 10.0f);
-        //pour changer l'espacement
-        GuiSliderBar((Rectangle){ 100, 160, 200, 20 }, "Espacement", TextFormat("%.2f", espacement), &espacement, 0.0f, 10.0f);
-        //pour changer la distance max
-        GuiSliderBar((Rectangle){ 100, 190, 200, 20 }, "Distance max", TextFormat("%.2f", maxDistanceFromCenter), &maxDistanceFromCenter, 0.0f, 20.0f);
-
+        #if PLATFORME_LINUX
+            //Pour changer la direction de la lumière
+            GuiSliderBar((Rectangle){ 100, 100, 200, 20 }, "Time of Day", TextFormat("%.0f:00", timeOfDay), &timeOfDay, 0.0f, 24.0f);
+            //pour changer la vitessse
+            GuiSliderBar((Rectangle){ 100, 130, 200, 20 }, "Vitesse", TextFormat("%.2f", vitesse), &vitesse, 0.0f, 10.0f);
+            //pour changer l'espacement
+            GuiSliderBar((Rectangle){ 100, 160, 200, 20 }, "Espacement", TextFormat("%.2f", espacement), &espacement, 0.0f, 10.0f);
+            //pour changer la distance max
+            GuiSliderBar((Rectangle){ 100, 190, 200, 20 }, "Distance max", TextFormat("%.2f", maxDistanceFromCenter), &maxDistanceFromCenter, 0.0f, 20.0f);
+        #endif
         // Affichage de l'heure
         DrawText(TextFormat("Time: %.0f:00", timeOfDay), 310, 10, 20, DARKGRAY);
         EndDrawing();
